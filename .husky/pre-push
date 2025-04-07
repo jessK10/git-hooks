@@ -1,0 +1,21 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+ALLOWED_TYPES="feat|fix|test|chore"
+
+# Ignore env branches
+if [[ "$BRANCH_NAME" =~ ^env/ ]]; then
+  echo "Skipping check for env branch: $BRANCH_NAME"
+  exit 0
+fi
+
+if [[ ! $BRANCH_NAME =~ ^($ALLOWED_TYPES)/[a-z0-9._-]+$ ]]; then
+  echo "ERROR: Branch name '$BRANCH_NAME' is invalid!"
+  echo "Must match format: <type>/<description> (e.g. feat/login-form)"
+  echo "Allowed types: feat, fix, test, chore"
+  exit 1
+fi
+
+echo " Branch name '$BRANCH_NAME' is valid!"
+exit 0
